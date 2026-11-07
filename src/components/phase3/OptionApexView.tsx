@@ -20,6 +20,7 @@ export function OptionApexView() {
     queryKey: ["option-apex"],
     queryFn: fetchApex,
     refetchInterval: 20_000,
+    refetchIntervalInBackground: false,
   });
 
   const { rows: sorted, sortKey, sortDir, onSort } = useSortedRows(
@@ -37,10 +38,10 @@ export function OptionApexView() {
   );
 
   return (
-    <div className="p-4 md:p-6">
+    <div className="stocksi-grid-glow min-h-full p-3 sm:p-5 lg:p-8">
       <PageHeader
-        title="Options Bias"
-        subtitle="Call vs put lean from Nifty 15m structure + India VIX regime"
+        title="Options Compass"
+        subtitle="A directional context gauge built from index structure and volatility conditions—not a live option-chain or open-interest feed."
         asOf={data?.asOf}
         marketStatus={data?.marketStatus}
         isLoading={isLoading}
@@ -99,7 +100,7 @@ export function OptionApexView() {
           </p>
         </div>
         <div className="rounded-lg border border-border bg-surface p-3">
-          <p className="text-[10px] uppercase tracking-wide text-muted">Bias</p>
+          <p className="text-[10px] uppercase tracking-wide text-muted">Market read</p>
           <div className="mt-1">
             <Badge
               variant={
@@ -125,15 +126,15 @@ export function OptionApexView() {
         </p>
       )}
 
-      <Card title="Candle-by-candle lean (Nifty 15m)">
+      <Card title="Directional pressure · Nifty 15m">
         <Table
           columns={[
-            { key: "time", label: "Time" },
+            { key: "time", label: "Interval" },
             { key: "indexClose", label: "Nifty", align: "right" },
-            { key: "changePercent", label: "Bar %", align: "right" },
-            { key: "callLean", label: "Call lean", align: "right" },
-            { key: "putLean", label: "Put lean", align: "right" },
-            { key: "netBias", label: "Net" },
+            { key: "changePercent", label: "Interval move", align: "right" },
+            { key: "callLean", label: "Upside pressure", align: "right" },
+            { key: "putLean", label: "Downside pressure", align: "right" },
+            { key: "netBias", label: "Net read" },
           ]}
           sortKey={sortKey}
           sortDir={sortDir}
