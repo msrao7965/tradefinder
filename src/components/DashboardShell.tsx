@@ -11,9 +11,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <GlobalTicker />
         <main id="main-content" className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
           {children}
+          <div className="mx-auto w-full max-w-[1800px] px-4 pb-3 pt-1 text-[9px] leading-relaxed text-[#7187a4] sm:px-6">
+            Stocksi is an AI-assisted market research tool, not investment advice. All signals are informational; verify independently before trading.
+          </div>
         </main>
-        <footer className="shrink-0 border-t border-white/[.08] bg-[#0b1422]/90 px-4 py-2 text-center text-[9px] leading-relaxed text-[#7187a4]">Stocksi is an AI-assisted market research tool, not investment advice. All signals are informational; verify independently before trading.</footer>
-        <footer className="shrink-0 border-t border-white/[.08] bg-[#0b1422]/90 px-4 py-2 text-center text-[9px] leading-relaxed text-[#7187a4]">Stocksi is an AI-assisted market research tool, not investment advice. All signals are informational; verify independently before trading.</footer>
       </div>
     </div>
   );
