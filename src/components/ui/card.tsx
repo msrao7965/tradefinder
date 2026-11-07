@@ -1,10 +1,3 @@
 import { cn } from "@/lib/utils";
-
-export function Card({title,children,className,action}:{title:string;children:React.ReactNode;className?:string;action?:React.ReactNode}) {
- return <section className={cn("stocksi-panel flex min-h-[280px] min-w-0 flex-col overflow-hidden",className)}>
-  <header className="flex min-h-[45px] items-center justify-between gap-3 border-b border-[#e4e5dc] bg-[#fbfaf5] px-3 py-2.5">
-   <h2 className="text-[10px] font-bold uppercase tracking-[.14em] text-[#344a3d]">{title}</h2>{action}
-  </header>
-  <div className="stocksi-scroll min-h-0 min-w-0 flex-1 overflow-auto">{children}</div>
- </section>;
-}
+import { Activity } from "lucide-react";
+export function Card({title,children,className,action}:{title:string;children:React.ReactNode;className?:string;action?:React.ReactNode}){return <section className={cn("stocksi-panel flex h-[330px] min-h-0 min-w-0 flex-col overflow-hidden transition duration-300 hover:-translate-y-0.5 hover:border-blue-300/30 hover:shadow-[0_16px_42px_rgba(0,0,0,.32)]",className)}><header className="relative flex min-h-[43px] shrink-0 items-center justify-between gap-2 border-b border-white/[.08] bg-white/[.025] px-3 py-2"><h2 className="flex min-w-0 items-center gap-2 truncate text-[10px] font-extrabold uppercase tracking-[.13em] text-[#eaf2ff]"><Activity className="h-3.5 w-3.5 shrink-0 text-[#64aaff]"/>{title}</h2>{action}</header><div className="stocksi-scroll min-h-0 min-w-0 flex-1 overflow-auto">{children}</div></section>}
