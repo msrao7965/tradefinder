@@ -130,7 +130,7 @@ export function SwingSpectrumView() {
   return (
     <div className="p-4 md:p-6">
       <PageHeader
-        title="Swing Spectrum"
+        title="Swing Setups"
         subtitle="Multi-day swing setups near 52-week extremes and strong session momentum"
         asOf={data?.asOf}
         marketStatus={data?.marketStatus}
