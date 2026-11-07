@@ -9,34 +9,22 @@ async function fetchTicker(): Promise<{ items: TickerItem[]; asOf: string }> {
   if (!res.ok) throw new Error("Ticker feed unavailable");
   return res.json();
 }
-
 function TickerChip({ item }: { item: TickerItem }) {
   const up = item.changePercent >= 0;
-  return (
-    <span className="mx-3 inline-flex items-center gap-2 whitespace-nowrap text-[11px] sm:mx-4 sm:text-xs">
-      <span className="font-semibold text-foreground">{item.name}</span>
-      <span className="tabular-nums text-muted">{item.price.toLocaleString("en-IN", { maximumFractionDigits: 2 })}</span>
-      <span className={`tabular-nums font-medium ${up ? "text-bull-text" : "text-bear-text"}`}>
-        {up ? "↑" : "↓"} {formatPct(item.changePercent)}
-      </span>
-      <span className="ml-1 text-[#526267]" aria-hidden="true">•</span>
-    </span>
-  );
+  return <span className="mx-4 inline-flex items-center gap-2 whitespace-nowrap font-mono text-[10px] sm:text-[11px]">
+    <span className="font-semibold tracking-wide text-[#cbd6dc]">{item.name}</span>
+    <span className="text-[#9cabb4]">{item.price.toLocaleString("en-IN",{maximumFractionDigits:2})}</span>
+    <span className={up?"font-semibold text-[#35c98a]":"font-semibold text-[#ef777d]"}>{up?"▲":"▼"} {formatPct(item.changePercent)}</span>
+  </span>;
 }
-
 export function GlobalTicker() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["global-ticker"], queryFn: fetchTicker, refetchInterval: 30_000,
-  });
-  const items = data?.items ?? [];
-
-  return (
-    <div aria-label="Live market ticker" className="flex h-9 shrink-0 items-center overflow-hidden border-b border-white/[.07] bg-[#0c151b]">
-      <span className="stocksi-kicker z-10 hidden shrink-0 bg-[#0c151b] px-3 text-[9px] font-bold uppercase sm:block">Market feed</span>
-      {isLoading && <p className="px-4 text-[11px] text-muted">Connecting to market feed…</p>}
-      {isError && <p className="px-4 text-[11px] text-bear-text">Market feed unavailable</p>}
-      {!isLoading && !isError && items.length === 0 && <p className="px-4 text-[11px] text-muted">No ticker quotes returned</p>}
-      {items.length > 0 && <div className="flex w-max animate-marquee">{[...items, ...items].map((item, i) => <TickerChip key={`${item.symbol}-${i}`} item={item} />)}</div>}
-    </div>
-  );
+  const {data,isLoading,isError}=useQuery({queryKey:["global-ticker"],queryFn:fetchTicker,refetchInterval:20_000,refetchIntervalInBackground:false});
+  const items=data?.items??[];
+  return <div aria-label="Live market ticker" className="flex h-9 shrink-0 items-center overflow-hidden border-b border-[#253440] bg-[#080e14]">
+    <span className="z-10 flex h-full shrink-0 items-center border-r border-[#253440] bg-[#0b141c] px-3 font-mono text-[9px] font-bold uppercase tracking-[.13em] text-[#55b9a7]">NSE · TAPE</span>
+    {isLoading&&<p className="px-3 text-[10px] text-[#82939d]">Connecting to market feed…</p>}
+    {isError&&<p className="px-3 text-[10px] text-[#ef777d]">Market feed unavailable</p>}
+    {!isLoading&&!isError&&items.length===0&&<p className="px-3 text-[10px] text-[#82939d]">No ticker quotes returned</p>}
+    {items.length>0&&<div className="flex w-max">{items.map(item=><TickerChip key={item.symbol} item={item}/>)}</div>}
+  </div>;
 }
