@@ -234,7 +234,7 @@ function ChgPill({ value }: { value: number }) {
 
 function SectorCard({
   sector,
-  }: {
+}: {
   sector: SectorSummary;
 }) {
   const [live, setLive] = useState(true);
@@ -382,24 +382,19 @@ function SectorCard({
   );
 }
 
-function extractTime(asOf?: string): string {
-  if (!asOf) return "--:--:--";
-  const match = asOf.match(/(\d{1,2}:\d{2}:\d{2})/);
-  return match?.[1] ?? asOf.slice(-8);
-}
-
 export function SectorScopeView() {
   const { data, isLoading, isFetching, isError, error } = useQuery({
     queryKey: ["sector-scope"],
     queryFn: fetchSectorScope,
     refetchInterval: 20_000,
+    refetchIntervalInBackground: false,
   });
 
   const sectors = data?.sectors ?? [];
   
 
   return (
-    <div className="p-4 md:p-6">
+    <div className="stocksi-grid-glow min-h-full p-3 sm:p-5 lg:p-8">
       <PageHeader
         title="Sector Atlas"
         subtitle="A visual map of where market strength is building, fading or rotating across industries."
