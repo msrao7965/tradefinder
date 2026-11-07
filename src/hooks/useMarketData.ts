@@ -11,7 +11,7 @@ async function fetchMarketPulse(): Promise<MarketPulseResponse> {
   return res.json();
 }
 
-export function useMarketData(refreshInterval = 12_000) {
+export function useMarketData(refreshInterval = 20_000) {
   return useQuery({
     queryKey: ["market-pulse"],
     queryFn: fetchMarketPulse,

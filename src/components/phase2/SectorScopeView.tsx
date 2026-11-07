@@ -53,12 +53,12 @@ function SectorHeatPanel({ sector }: { sector: SectorSummary }) {
   if (!stocks.length) return null;
 
   return (
-    <section className="flex min-h-[200px] flex-col overflow-hidden rounded-lg border border-border bg-surface">
+    <section className="stocksi-panel flex min-h-[200px] flex-col overflow-hidden rounded-2xl">
       <header className="flex items-center justify-between border-b border-border px-3 py-2">
         <button
           type="button"
           onClick={() => scrollToSectorTable(sector.sector)}
-          className="text-left text-xs font-bold uppercase tracking-wider text-white hover:text-bull-text"
+          className="text-left text-xs font-bold uppercase tracking-wider text-[#344b38] hover:text-[#52774d]"
           title={`Jump to ${sector.sector} table`}
         >
           {sector.sector}
@@ -72,7 +72,7 @@ function SectorHeatPanel({ sector }: { sector: SectorSummary }) {
           {formatPct(sector.avgChangePercent)} · {stocks.length} stocks
         </span>
       </header>
-      <div className="flex min-h-[160px] flex-1 flex-wrap content-stretch gap-0.5 bg-[#0e0f15] p-0.5">
+      <div className="flex min-h-[160px] flex-1 flex-wrap content-stretch gap-0.5 bg-[#e8e8dd] p-0.5">
         {stocks.map((st) => {
           const flex = tileFlex(st, minTo);
           return (
@@ -156,18 +156,18 @@ function SectorPerformanceChart({ sectors }: { sectors: SectorSummary[] }) {
   }
 
   return (
-    <div className="h-[300px] rounded-lg border border-border bg-surface p-3">
+    <div className="stocksi-panel h-[300px] rounded-2xl p-3">
       <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-white">
         Sector Heatmap — Bull &amp; Bear
       </h3>
       <p className="mb-2 text-[10px] text-muted">
-        Click a column to jump to that sector table
+        Select a sector to inspect its leading instruments
       </p>
       <ResponsiveContainer width="100%" height="85%">
         <BarChart data={rows} margin={{ top: 8, right: 8, left: 0, bottom: 36 }}>
           <XAxis
             dataKey="sector"
-            tick={{ fill: "#ffffff", fontSize: 10 }}
+            tick={{ fill: "#687568", fontSize: 10 }}
             interval={0}
             angle={-35}
             textAnchor="end"
@@ -181,11 +181,11 @@ function SectorPerformanceChart({ sectors }: { sectors: SectorSummary[] }) {
           <Tooltip
             cursor={{ fill: "rgba(255,255,255,0.04)" }}
             contentStyle={{
-              background: "#1b1c24",
-              border: "1px solid #2a2b36",
+              background: "#fbfaf5",
+              border: "1px solid #dfe2d6",
               borderRadius: 6,
               fontSize: 12,
-              color: "#ffffff",
+              color: "#344b38",
             }}
             formatter={(value) => [`${value}%`, "Avg %"]}
             labelFormatter={(_, payload) =>
@@ -206,7 +206,7 @@ function SectorPerformanceChart({ sectors }: { sectors: SectorSummary[] }) {
             {rows.map((entry) => (
               <Cell
                 key={entry.full}
-                fill={entry.avg >= 0 ? "#22c55e" : "#ef4444"}
+                fill={entry.avg >= 0 ? "#66845a" : "#ad6a60"}
                 cursor="pointer"
                 onClick={() => scrollToSectorTable(entry.full)}
               />
@@ -224,7 +224,7 @@ function ChgPill({ value }: { value: number }) {
     <span
       className={cn(
         "inline-flex min-w-[4.25rem] justify-center rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums text-white",
-        up ? "bg-[#16a34a]" : "bg-[#dc2626]",
+        up ? "bg-[#66845a]" : "bg-[#ad6a60]",
       )}
     >
       {formatPct(value)}
@@ -234,10 +234,8 @@ function ChgPill({ value }: { value: number }) {
 
 function SectorCard({
   sector,
-  asOfTime,
 }: {
   sector: SectorSummary;
-  asOfTime: string;
 }) {
   const [live, setLive] = useState(true);
   const [query, setQuery] = useState("");
@@ -256,7 +254,7 @@ function SectorCard({
   return (
     <section
       id={sectorAnchorId(sector.sector)}
-      className="flex min-h-[280px] scroll-mt-4 flex-col overflow-hidden rounded-lg border border-border bg-surface transition-shadow"
+      className="stocksi-panel flex min-h-[280px] scroll-mt-4 flex-col overflow-hidden rounded-2xl transition-shadow"
     >
       <div
         className="h-1.5 w-full"
@@ -265,7 +263,7 @@ function SectorCard({
         }}
       />
       <header className="flex items-center gap-2 border-b border-border px-3 py-2.5">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-[#344b38]">
           {sector.sector}
         </h3>
         <span className="text-[10px] text-muted">
@@ -314,8 +312,8 @@ function SectorCard({
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Filter symbol…"
-            className="w-full rounded border border-border bg-[#12131a] px-2 py-1 text-xs text-white outline-none focus:border-muted"
+            placeholder="Find an instrument…"
+            className="w-full rounded border border-border bg-white/80 px-2 py-1 text-xs text-[#344b38] outline-none focus:border-muted"
           />
         </div>
       )}
@@ -323,17 +321,17 @@ function SectorCard({
         <table className="w-full border-collapse text-left text-xs">
           <thead className="sticky top-0 z-10 bg-surface">
             <tr className="border-b border-border text-[10px] uppercase tracking-wider text-muted">
-              <th className="px-3 py-2 font-medium">Symbol</th>
-              <th className="px-3 py-2 text-right font-medium">LTP</th>
-              <th className="px-3 py-2 text-right font-medium">Chg %</th>
-              <th className="px-3 py-2 text-right font-medium">Time</th>
+              <th className="px-3 py-2 font-medium">Instrument</th>
+              <th className="px-3 py-2 text-right font-medium">Last price</th>
+              <th className="px-3 py-2 text-right font-medium">Session move</th>
+              
               <th className="px-3 py-2 text-right font-medium">Trend</th>
             </tr>
           </thead>
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-3 py-8 text-center text-muted">
+                <td colSpan={4} className="px-3 py-8 text-center text-muted">
                   No stocks in this sector
                 </td>
               </tr>
@@ -345,7 +343,7 @@ function SectorCard({
                     key={r.symbol}
                     className={cn(
                       "border-b border-border/50",
-                      i % 2 === 1 && "bg-[#16171f]",
+                      i % 2 === 1 && "bg-[#f0f1e9]",
                       !live && "opacity-60",
                     )}
                   >
@@ -354,20 +352,18 @@ function SectorCard({
                         href={tradingViewUrl(r.symbol)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-medium text-white hover:text-bull-text"
+                        className="font-semibold text-[#344b38] hover:text-[#66845a]"
                       >
                         {r.symbol}
                       </a>
                     </td>
-                    <td className="px-3 py-2 text-right tabular-nums text-white">
+                    <td className="px-3 py-2 text-right tabular-nums text-[#344b38]">
                       {formatNumber(r.ltp)}
                     </td>
                     <td className="px-3 py-2 text-right">
                       <ChgPill value={r.changePercent} />
                     </td>
-                    <td className="px-3 py-2 text-right tabular-nums text-muted">
-                      {asOfTime}
-                    </td>
+                    
                     <td className="px-3 py-2 text-right">
                       {up ? (
                         <ArrowUp className="ml-auto h-3.5 w-3.5 text-bull-text" />
@@ -386,27 +382,22 @@ function SectorCard({
   );
 }
 
-function extractTime(asOf?: string): string {
-  if (!asOf) return "--:--:--";
-  const match = asOf.match(/(\d{1,2}:\d{2}:\d{2})/);
-  return match?.[1] ?? asOf.slice(-8);
-}
-
 export function SectorScopeView() {
   const { data, isLoading, isFetching, isError, error } = useQuery({
     queryKey: ["sector-scope"],
     queryFn: fetchSectorScope,
     refetchInterval: 20_000,
+    refetchIntervalInBackground: false,
   });
 
   const sectors = data?.sectors ?? [];
-  const asOfTime = extractTime(data?.asOf);
+  
 
   return (
-    <div className="p-4 md:p-6">
+    <div className="stocksi-grid-glow min-h-full p-3 sm:p-5 lg:p-8">
       <PageHeader
-        title="Sector Heatmap"
-        subtitle="Per-sector heatmaps, gainers chart, and live boards"
+        title="Sector Atlas"
+        subtitle="A visual map of where market strength is building, fading or rotating across industries."
         asOf={data?.asOf}
         marketStatus={data?.marketStatus}
         quotesFetched={data?.quotesFetched}
@@ -433,7 +424,7 @@ export function SectorScopeView() {
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
         {sectors.map((s) => (
-          <SectorCard key={s.sector} sector={s} asOfTime={asOfTime} />
+          <SectorCard key={s.sector} sector={s} />
         ))}
       </div>
 

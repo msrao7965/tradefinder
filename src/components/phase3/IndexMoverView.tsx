@@ -34,12 +34,12 @@ function IndicesTable({ rows }: { rows: IndexQuoteRow[] }) {
   );
 
   return (
-    <Card title="Index Board">
+    <Card title="Benchmark overview">
       <Table
         columns={[
           { key: "name", label: "Index" },
-          { key: "price", label: "LTP", align: "right" },
-          { key: "changePercent", label: "% Chg", align: "right" },
+          { key: "price", label: "Last price", align: "right" },
+          { key: "changePercent", label: "Session move", align: "right" },
           { key: "dayHigh", label: "High", align: "right" },
           { key: "dayLow", label: "Low", align: "right" },
         ]}
@@ -98,11 +98,11 @@ function DriversTable({
     <Card title={title}>
       <Table
         columns={[
-          { key: "symbol", label: "Symbol" },
+          { key: "symbol", label: "Instrument" },
           { key: "sector", label: "Sector" },
           { key: "ltp", label: "LTP", align: "right" },
           { key: "changePercent", label: "% Chg", align: "right" },
-          { key: "turnover", label: "T.O.", align: "right" },
+          { key: "turnover", label: "Value traded", align: "right" },
         ]}
         sortKey={sortKey}
         sortDir={sortDir}
@@ -139,14 +139,15 @@ export function IndexMoverView() {
   const { data, isLoading, isFetching, isError, error } = useQuery({
     queryKey: ["index-mover"],
     queryFn: fetchIndexMover,
-    refetchInterval: 15_000,
+    refetchInterval: 20_000,
+    refetchIntervalInBackground: false,
   });
 
   return (
-    <div className="p-4 md:p-6">
+    <div className="stocksi-grid-glow min-h-full p-3 sm:p-5 lg:p-8">
       <PageHeader
         title="Index Drivers"
-        subtitle="Live index board + stocks driving breadth"
+        subtitle="Read the forces behind index movement—price direction, breadth and the instruments contributing most to the move."
         asOf={data?.asOf}
         marketStatus={data?.marketStatus}
         isLoading={isLoading}
@@ -171,12 +172,12 @@ export function IndexMoverView() {
           <IndicesTable rows={data?.indices ?? []} />
         </div>
         <DriversTable
-          title="Drivers Up"
+          title="Positive contributors"
           rows={data?.topDriversUp ?? []}
           mode="up"
         />
         <DriversTable
-          title="Drivers Down"
+          title="Negative contributors"
           rows={data?.topDriversDown ?? []}
           mode="down"
         />

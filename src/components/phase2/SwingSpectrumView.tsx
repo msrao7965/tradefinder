@@ -65,14 +65,14 @@ function SwingTable({
     <Card title={title}>
       <Table
         columns={[
-          { key: "symbol", label: "Symbol" },
+          { key: "symbol", label: "Instrument" },
           { key: "sector", label: "Sector" },
-          { key: "ltp", label: "LTP", align: "right" },
-          { key: "changePercent", label: "% Chg", align: "right" },
+          { key: "ltp", label: "Last price", align: "right" },
+          { key: "changePercent", label: "Session move", align: "right" },
           { key: "pctFromHigh", label: "vs 52W H", align: "right" },
           { key: "pctFromLow", label: "vs 52W L", align: "right" },
-          { key: "swingBias", label: "Bias" },
-          { key: "signal", label: "Signal" },
+          { key: "swingBias", label: "Structure" },
+          { key: "signal", label: "Directional read" },
         ]}
         sortKey={sortKey}
         sortDir={sortDir}
@@ -125,13 +125,14 @@ export function SwingSpectrumView() {
     queryKey: ["swing-spectrum"],
     queryFn: fetchSwing,
     refetchInterval: 20_000,
+    refetchIntervalInBackground: false,
   });
 
   return (
-    <div className="p-4 md:p-6">
+    <div className="stocksi-grid-glow min-h-full p-3 sm:p-5 lg:p-8">
       <PageHeader
-        title="Swing Setups"
-        subtitle="Multi-day swing setups near 52-week extremes and strong session momentum"
+        title="Swing Radar"
+        subtitle="A wider-lens view of price structure—tracking leaders near yearly extremes and names gathering session momentum."
         asOf={data?.asOf}
         marketStatus={data?.marketStatus}
         quotesFetched={data?.quotesFetched}
@@ -147,14 +148,14 @@ export function SwingSpectrumView() {
       />
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
         <SwingTable
-          title="Near 52W High"
+          title="At the upper frontier"
           rows={data?.nearHigh ?? []}
           emptyMessage="No stocks within 5% of 52-week high"
           initialKey="pctFromHigh"
           initialDir="desc"
         />
         <SwingTable
-          title="Near 52W Low"
+          title="Near the lower frontier"
           rows={data?.nearLow ?? []}
           emptyMessage="No stocks near 52-week low support"
           initialKey="pctFromLow"
@@ -162,7 +163,7 @@ export function SwingSpectrumView() {
         />
         <div className="md:col-span-2">
           <SwingTable
-            title="Session Momentum Swings"
+            title="Momentum gathering"
             rows={data?.momentum ?? []}
             emptyMessage="No momentum candidates yet"
             initialKey="changePercent"

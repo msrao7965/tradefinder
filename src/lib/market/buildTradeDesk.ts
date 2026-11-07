@@ -150,58 +150,58 @@ function scoreSetup(
     score += 30;
     reasons.push(
       side === "LONG"
-        ? `Broke open-range high ${range!.high.toFixed(2)}`
-        : `Broke open-range low ${range!.low.toFixed(2)}`,
+        ? `Price cleared the opening ceiling at ${range!.high.toFixed(2)}`
+        : `Price slipped beneath the opening floor at ${range!.low.toFixed(2)}`,
     );
   } else {
     score += 10;
     reasons.push(
-      `Momentum ${q.changePercent >= 0 ? "+" : ""}${q.changePercent.toFixed(2)}% without clean open-range break`,
+      `Price is moving ${q.changePercent >= 0 ? "higher" : "lower"} (${q.changePercent.toFixed(2)}%) without a decisive range clearance`,
     );
   }
 
   if (volumeOk) {
     score += 20;
     reasons.push(
-      `Volume confirmation R.Fac ${rFac.toFixed(2)} · R.Vol ${rVol.toFixed(2)}×`,
+      `Participation is running ahead of its normal session rhythm`,
     );
   } else {
-    reasons.push("Volume not confirmed yet — wait for participation");
+    reasons.push("Participation has not expanded enough to validate the move");
   }
 
   if (sectorAligned) {
     score += 20;
     reasons.push(
-      `Sector ${sector} aligned (${sectorAvg >= 0 ? "+" : ""}${sectorAvg.toFixed(2)}% avg)`,
+      `The wider ${sector} group is moving in the same direction (${sectorAvg.toFixed(2)}% average)`,
     );
   } else if (sectorConflict) {
     score -= 15;
     reasons.push(
-      `Sector ${sector} conflicting (${sectorAvg >= 0 ? "+" : ""}${sectorAvg.toFixed(2)}% avg)`,
+      `The wider ${sector} group is moving against this setup (${sectorAvg.toFixed(2)}% average)`,
     );
   } else {
     score += 5;
-    reasons.push(`Sector ${sector} neutral`);
+    reasons.push(`The wider ${sector} group is not adding a clear directional tailwind`);
   }
 
   if (!extended) {
     score += 15;
-    reasons.push("Not over-extended from open — entry still reasonable");
+    reasons.push("Price has not stretched excessively from its opening level");
   } else {
     score -= 10;
     reasons.push(
-      `Extended ${Math.abs(moveFromOpen).toFixed(1)}% from open — chase risk`,
+      `Price has already travelled ${Math.abs(moveFromOpen).toFixed(1)}% from the open; late-entry risk is elevated`,
     );
   }
 
   if (actionableWindow) {
     score += 15;
-    reasons.push("Inside actionable session window (≈09:20–14:45 IST)");
+    reasons.push("Current timing is within the preferred liquidity window");
   } else if (marketOpen) {
     score -= 5;
-    reasons.push("Outside preferred entry window — prefer wait / reduce size");
+    reasons.push("Timing is less favourable; patience may improve entry quality");
   } else {
-    reasons.push("Market closed — prep levels for next session");
+    reasons.push("Session is closed; treat this as a preparation list for the next open");
   }
 
   score = Math.max(0, Math.min(100, Math.round(score)));

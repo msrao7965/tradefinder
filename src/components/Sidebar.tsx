@@ -12,13 +12,13 @@ const stocksNav = [
   { label: "Trade Desk", href: "/trade-desk", icon: LayoutDashboard },
   { label: "Market Pulse", href: "/market-pulse", icon: Activity },
   { label: "Flow Watch", href: "/insider-strategy", icon: Radar },
-  { label: "Sector Heatmap", href: "/sector-scope", icon: Layers },
-  { label: "Swing Setups", href: "/swing-spectrum", icon: Waves },
+  { label: "Sector Atlas", href: "/sector-scope", icon: Layers },
+  { label: "Swing Radar", href: "/swing-spectrum", icon: Waves },
 ] as const;
 
 const indexNav = [
   { label: "Momentum Clock", href: "/option-clock", icon: Clock },
-  { label: "Options Bias", href: "/option-apex", icon: BarChart3 },
+  { label: "Options Compass", href: "/option-apex", icon: BarChart3 },
   { label: "Index Drivers", href: "/index-mover", icon: TrendingUp },
 ] as const;
 
@@ -26,15 +26,15 @@ const allNav = [...stocksNav, ...indexNav];
 
 function Brand() {
   return (
-    <Link href="/trade-desk" aria-label="Stocksi by Underground Bulls home" className="flex shrink-0 items-center gap-2.5">
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#b6ff69]/25 bg-[#b6ff69]/10 text-[#b6ff69]">
-        <LineChart className="h-[18px] w-[18px]" aria-hidden="true" />
+    <Link href="/trade-desk" aria-label="Stocksi by Underground Bulls home" className="flex shrink-0 items-center gap-3">
+      <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#66845a]/25 bg-[#e8eee2] text-[#426847] shadow-sm">
+        <LineChart className="h-[19px] w-[19px]" aria-hidden="true" />
       </span>
       <span className="leading-none">
-        <span className="block text-[19px] font-black tracking-[-0.06em] text-white">
-          Stock<span className="text-[#b6ff69]">si</span>
+        <span className="block text-[22px] font-black tracking-[-0.07em] text-[#20382d]">
+          Stock<span className="text-[#78965c]">si</span>
         </span>
-        <span className="mt-1 block text-[9px] font-semibold uppercase tracking-[.18em] text-[#91a2a2]">
+        <span className="mt-1.5 block text-[8px] font-bold uppercase tracking-[.2em] text-[#7c8578]">
           by Underground Bulls
         </span>
       </span>
@@ -49,14 +49,15 @@ function NavLink({ item, active }: { item: (typeof allNav)[number]; active: bool
       href={item.href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex min-h-10 items-center gap-3 rounded-xl px-3 text-[13px] font-medium transition-colors",
+        "group flex min-h-11 items-center gap-3 rounded-xl px-3.5 text-[13px] font-semibold transition-all duration-200",
         active
-          ? "border border-[#b6ff69]/20 bg-[#b6ff69]/10 text-[#c5ff8e]"
-          : "border border-transparent text-[#94a3a3] hover:bg-white/[.045] hover:text-white",
+          ? "border border-[#66845a]/20 bg-gradient-to-r from-[#e6eddf] to-[#f3f4eb] text-[#345b3d] shadow-[inset_3px_0_0_#66845a,0_5px_18px_rgba(54,82,51,.06)]"
+          : "border border-transparent text-[#737e73] hover:border-[#dfe2d6] hover:bg-white/65 hover:text-[#294334]",
       )}
     >
-      <Icon className="h-[17px] w-[17px] shrink-0" aria-hidden="true" />
+      <Icon className={cn("h-[17px] w-[17px] shrink-0 transition-transform group-hover:scale-105", active ? "text-[#52774d]" : "text-[#899386")} aria-hidden="true" />
       <span>{item.label}</span>
+      {active && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#66845a]" />}
     </Link>
   );
 }
@@ -67,26 +68,32 @@ export function Sidebar() {
 
   return (
     <>
-      <aside className="hidden h-full w-[246px] shrink-0 flex-col border-r border-white/[.07] bg-[#0a1117] px-4 py-6 md:flex">
-        <div className="mb-9 px-2"><Brand /></div>
-        <p className="stocksi-kicker mb-3 px-3 text-[9px] font-bold uppercase">Equity workspace</p>
-        <nav aria-label="Stock navigation" className="space-y-1">
+      <aside className="hidden h-full w-[258px] shrink-0 flex-col border-r border-[#dcded3] bg-[#f8f7f1]/85 px-4 py-6 shadow-[8px_0_30px_rgba(40,55,37,.025)] backdrop-blur-xl md:flex">
+        <div className="mb-10 px-2"><Brand /></div>
+        <p className="stocksi-eyebrow mb-3 px-3">Equity intelligence</p>
+        <nav aria-label="Stock navigation" className="space-y-1.5">
           {stocksNav.map((item) => <NavLink key={item.href} item={item} active={activePath === item.href} />)}
         </nav>
-        <p className="stocksi-kicker mb-3 mt-8 px-3 text-[9px] font-bold uppercase">Index & derivatives</p>
-        <nav aria-label="Index navigation" className="space-y-1">
+        <p className="stocksi-eyebrow mb-3 mt-9 px-3">Index & derivatives</p>
+        <nav aria-label="Index navigation" className="space-y-1.5">
           {indexNav.map((item) => <NavLink key={item.href} item={item} active={activePath === item.href} />)}
         </nav>
-        <div className="mt-auto rounded-xl border border-white/[.07] bg-white/[.025] p-3 text-[10px] leading-relaxed text-[#839393]">
-          Market intelligence, organised for decisive execution.
-          <span className="mt-2 block text-[#b6ff69]">Verify every setup on your chart.</span>
+        <div className="mt-auto rounded-2xl border border-[#dfe2d6] bg-gradient-to-br from-white/90 to-[#edf0e6]/80 p-4 shadow-sm">
+          <p className="stocksi-eyebrow mb-2">Underground research</p>
+          <p className="text-[11px] leading-relaxed text-[#687568]">A clearer read on participation, price behaviour and market structure.</p>
+          <div className="mt-3 flex items-center gap-2 text-[10px] font-semibold text-[#52774d]">
+            <span className="stocksi-live-dot h-1.5 w-1.5 rounded-full bg-[#66845a]" />
+            Intelligence stream active
+          </div>
         </div>
       </aside>
 
-      <header className="border-b border-white/[.07] bg-[#0a1117] px-4 pb-2 pt-3 md:hidden">
+      <header className="border-b border-[#deded2] bg-[#f8f7f1]/90 px-4 pb-3 pt-3 shadow-sm backdrop-blur-xl md:hidden">
         <div className="flex items-center justify-between gap-3">
           <Brand />
-          <span className="rounded-full border border-[#b6ff69]/20 bg-[#b6ff69]/10 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-wider text-[#b6ff69]">Live workspace</span>
+          <span className="flex items-center gap-1.5 rounded-full border border-[#dce5d7] bg-[#eaf0e5] px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-wider text-[#52774d]">
+            <span className="stocksi-live-dot h-1.5 w-1.5 rounded-full bg-[#66845a]" /> Live
+          </span>
         </div>
         <nav aria-label="Main navigation" className="stocksi-scroll mt-3 flex gap-1.5 overflow-x-auto pb-1">
           {allNav.map((item) => {
@@ -94,8 +101,8 @@ export function Sidebar() {
             const active = activePath === item.href;
             return (
               <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined}
-                className={cn("flex min-h-9 shrink-0 items-center gap-1.5 rounded-lg border px-3 text-[11px] font-medium",
-                  active ? "border-[#b6ff69]/25 bg-[#b6ff69]/10 text-[#c5ff8e]" : "border-white/[.07] text-[#93a2a3]")}>
+                className={cn("flex min-h-9 shrink-0 items-center gap-1.5 rounded-xl border px-3 text-[11px] font-semibold",
+                  active ? "border-[#66845a]/25 bg-[#e8eee2] text-[#345b3d]" : "border-[#e3e4da] bg-white/55 text-[#778174]")}>
                 <Icon className="h-3.5 w-3.5" aria-hidden="true" />{item.label}
               </Link>
             );
