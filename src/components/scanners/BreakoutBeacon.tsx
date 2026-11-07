@@ -52,7 +52,7 @@ export function BreakoutBeacon({
 
   return (
     <Card
-      title="Breakout Beacon"
+      title="Range Radar"
       action={
         isPrior ? (
           <span className="text-[10px] font-medium uppercase tracking-wide text-muted">
