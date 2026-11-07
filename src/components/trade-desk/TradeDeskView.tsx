@@ -89,7 +89,7 @@ function SetupCard({ setup }: { setup: TradeSetup }) {
         </div>
       </div>
 
-      <div className="mb-3 grid grid-cols-1 gap-2 rounded-md border border-border/80 bg-[#12131a] p-3 text-xs sm:grid-cols-3">
+      <div className="mb-3 grid grid-cols-1 gap-2 rounded-md border border-border/80 bg-[#0a1218] p-3 text-xs sm:grid-cols-3">
         <div>
           <p className="mb-0.5 text-muted">Entry zone</p>
           <p className="font-semibold tabular-nums">
@@ -160,7 +160,7 @@ export function TradeDeskView() {
   });
 
   return (
-    <div className="p-4 md:p-6">
+    <div className="mx-auto w-full max-w-[1500px] p-3 sm:p-5 lg:p-7">
       <PageHeader
         title="Trade Desk"
         subtitle="Ranked equity setups — which stock, long/short, enter or wait, and why"
