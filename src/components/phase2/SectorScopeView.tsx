@@ -242,16 +242,22 @@ function SectorCard({
   const [live, setLive] = useState(true);
   const [query, setQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
   const advRatio =
     sector.stockCount > 0 ? sector.advancers / sector.stockCount : 0.5;
 
   const rows = useMemo(() => {
     const list = sector.stocks ?? sector.leaders ?? [];
-    if (!query.trim()) return list;
     const q = query.trim().toUpperCase();
-    return list.filter((s) => s.symbol.includes(q));
-  }, [sector, query]);
+    return [...list]
+      .filter((s) => !q || s.symbol.includes(q))
+      .sort((a, b) =>
+        sortDirection === "asc"
+          ? a.changePercent - b.changePercent
+          : b.changePercent - a.changePercent,
+      );
+  }, [sector, query, sortDirection]);
 
   return (
     <section
@@ -325,7 +331,11 @@ function SectorCard({
             <tr className="border-b border-border text-[10px] uppercase tracking-wider text-muted">
               <th className="px-3 py-2 font-medium">Symbol</th>
               <th className="px-3 py-2 text-right font-medium">LTP</th>
-              <th className="px-3 py-2 text-right font-medium">Chg %</th>
+              <th className="px-3 py-2 text-right font-medium">
+                <button type="button" onClick={() => setSortDirection((v) => (v === "asc" ? "desc" : "asc"))} className="inline-flex items-center justify-end gap-1 whitespace-nowrap text-[#b9cbe2] transition hover:text-white" aria-label="Toggle percentage sort" title="Sort by percentage change">
+                  Chg % {sortDirection === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
+                </button>
+              </th>
               <th className="px-3 py-2 text-right font-medium">Time</th>
               <th className="px-3 py-2 text-right font-medium">Trend</th>
             </tr>
