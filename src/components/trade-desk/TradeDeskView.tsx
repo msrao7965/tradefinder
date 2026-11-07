@@ -1,226 +1,61 @@
 "use client";
 
+import { useEffect,useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink,ArrowUpRight,ArrowDownRight,Clock3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
 import { tradingViewUrl } from "@/components/SymbolLink";
-import { formatNumber, formatPct, cn } from "@/lib/utils";
-import type { TradeDeskResponse, TradeSetup } from "@/lib/trade-desk-types";
+import { formatNumber,formatPct,cn } from "@/lib/utils";
+import type { TradeDeskResponse,TradeSetup } from "@/lib/trade-desk-types";
 
-async function fetchTradeDesk(): Promise<TradeDeskResponse> {
-  const res = await fetch("/api/trade-desk", { cache: "no-store" });
-  if (!res.ok) throw new Error(`Trade desk HTTP ${res.status}`);
-  return res.json();
+async function fetchTradeDesk():Promise<TradeDeskResponse>{const res=await fetch("/api/trade-desk",{cache:"no-store"});if(!res.ok)throw new Error(`Trade desk HTTP ${res.status}`);return res.json()}
+function todayKey(){return new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"})}
+function timeLabel(ts:number){return new Intl.DateTimeFormat("en-IN",{timeZone:"Asia/Kolkata",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(ts)}
+function FirstSeen({value}:{value?:number}){return <span className="inline-flex items-center gap-1 font-mono text-[9px] text-[#849084]"><Clock3 className="h-3 w-3"/>{value?timeLabel(value):"—"}</span>}
+function FlowLine({value,positive}:{value:number;positive:boolean}){const w=Math.min(100,Math.max(5,value/3*100));return <div className="flex items-center gap-2"><div className="stocksi-flow-track h-1.5 w-20 rounded-full"><div className="stocksi-surge-bar h-full rounded-full" style={{width:w+"%",background:positive?"#548e67":"#bb7467"}}/></div><span className="font-mono text-[10px] text-[#5d6b60]">{value.toFixed(2)}×</span></div>}
+function SetupCard({setup,firstSeen}:{setup:TradeSetup;firstSeen?:number}){
+ const up=setup.side==="LONG";
+ return <article className="stocksi-panel overflow-hidden">
+  <div className="flex flex-wrap items-center gap-2 border-b border-[#e8e8df] bg-[#fbfbf6] px-3 py-2.5 sm:px-4">
+   <Badge variant={setup.action==="ENTER"?"bull":setup.action==="WAIT"?"neutral":"bear"}>{setup.action}</Badge>
+   <Badge variant={up?"bull":"bear"}>{up?"LONG BIAS":"SHORT BIAS"}</Badge>
+   <a href={tradingViewUrl(setup.symbol)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[15px] font-bold tracking-tight text-[#263a2e] hover:text-[#397b52]">{setup.symbol}<ExternalLink className="h-3 w-3 text-[#8b978c]"/></a>
+   <span className="text-[9px] uppercase tracking-wider text-[#879187]">{setup.sector}</span>
+   <span className="ml-auto text-[9px] text-[#879187]">FIRST DETECTED <FirstSeen value={firstSeen}/></span>
+  </div>
+  <div className="grid grid-cols-2 gap-px bg-[#e8e9e0] sm:grid-cols-4 lg:grid-cols-7">
+   <Metric label="Last traded" value={formatNumber(setup.ltp)} sub={formatPct(setup.changePercent)} tone={setup.changePercent>=0?"bull":"bear"}/>
+   <Metric label="Confluence" value={String(setup.score)} sub="model score"/>
+   <div className="bg-[#fffefa] px-3 py-3"><p className="text-[9px] uppercase tracking-wider text-[#899389]">Participation</p><div className="mt-2"><FlowLine value={setup.relativeVolume} positive={up}/></div></div>
+   <Metric label="Drive index" value={formatNumber(setup.rFactor,2)}/>
+   <Metric label="Entry zone" value={`${formatNumber(setup.entryLow)} – ${formatNumber(setup.entryHigh)}`}/>
+   <Metric label="Risk boundary" value={formatNumber(setup.invalidation)} tone="bear"/>
+   <Metric label="Objective" value={formatNumber(setup.target)} tone="bull"/>
+  </div>
+  {setup.reasons.length>0&&<div className="border-t border-[#e8e8df] px-3 py-2.5 text-[10px] leading-relaxed text-[#748075] sm:px-4"><span className="mr-2 font-bold uppercase tracking-wider text-[#5e7b63]">Market read</span>{setup.reasons.slice(0,3).join(" · ")}</div>}
+ </article>;
 }
-
-function ActionBadge({ action }: { action: TradeSetup["action"] }) {
-  if (action === "ENTER") {
-    return (
-      <span className="rounded bg-bull-bg px-2 py-0.5 text-[11px] font-bold tracking-wide text-bull-text">
-        ENTER
-      </span>
-    );
-  }
-  if (action === "WAIT") {
-    return (
-      <span className="rounded bg-border/70 px-2 py-0.5 text-[11px] font-bold tracking-wide text-foreground">
-        WAIT
-      </span>
-    );
-  }
-  return (
-    <span className="rounded bg-bear-bg px-2 py-0.5 text-[11px] font-bold tracking-wide text-bear-text">
-      AVOID
-    </span>
-  );
+function Metric({label,value,sub,tone}:{label:string;value:string;sub?:string;tone?:"bull"|"bear"}){return <div className="min-w-0 bg-[#fffefa] px-3 py-3"><p className="text-[9px] uppercase tracking-wider text-[#899389]">{label}</p><p className={cn("mt-1 break-words font-mono text-[11px] font-semibold",tone==="bull"?"text-[#2e8654]":tone==="bear"?"text-[#b45349]":"text-[#35483b]")}>{value}</p>{sub&&<p className="mt-0.5 font-mono text-[9px] text-[#879187]">{sub}</p>}</div>}
+function SetupSection({title,setups,empty,firstSeen}:{title:string;setups:TradeSetup[];empty:string;firstSeen:Record<string,number>}){return <section className="mb-4"><div className="mb-2 flex items-center justify-between border-b border-[#dedfd5] pb-2"><h2 className="text-[10px] font-bold uppercase tracking-[.14em] text-[#526b57]">{title}</h2><span className="font-mono text-[9px] text-[#899389]">{setups.length} INSTRUMENTS</span></div>{setups.length===0?<div className="stocksi-panel px-4 py-8 text-center text-[10px] text-[#899389]">{empty}</div>:<div className="grid grid-cols-1 gap-3">{setups.map(s=><SetupCard key={s.symbol+"-"+s.side} setup={s} firstSeen={firstSeen[s.symbol]}/>)}</div>}</section>}
+function MarketPulseArt(){return <div className="stocksi-panel relative flex min-h-[94px] items-center justify-between gap-4 overflow-hidden px-4 py-3"><div className="relative z-10 max-w-[230px]"><p className="text-[9px] font-bold uppercase tracking-[.16em] text-[#6f846f]">Market activity stream</p><p className="mt-1 text-[12px] font-semibold text-[#34483a]">Capital is moving. Follow participation.</p><p className="mt-1 text-[9px] text-[#879187]">Live quote snapshots · directional context</p></div><div className="relative flex h-[66px] min-w-[100px] flex-1 items-end justify-end gap-[4px]" aria-hidden="true">{[18,30,22,46,34,56,41,65,48,72,59,88,68,95,74,100,79,92,65,83].map((h,i)=><span key={i} className="stocksi-candle relative w-[5px] rounded-t-[2px]" style={{height:h+"%",background:i%5===0?"#bd8175":"#649675",animationDelay:(i%8)*.08+"s"}}><span className="absolute -top-2 left-1/2 h-2 w-px -translate-x-1/2 bg-current opacity-50"/></span>)}</div><div className="stocksi-flow-dot absolute right-4 top-3 h-2 w-2 rounded-full bg-[#5b9a6d]"/></div>}
+export function TradeDeskView(){
+ const {data,isLoading,isFetching,isError,error}=useQuery({queryKey:["trade-desk"],queryFn:fetchTradeDesk,refetchInterval:20_000,refetchIntervalInBackground:false});
+ const [firstSeen,setFirstSeen]=useState<Record<string,number>>({});
+ useEffect(()=>{if(!data)return;try{const key="stocksi-trade-first-seen-"+todayKey();const saved=JSON.parse(localStorage.getItem(key)||"{}") as Record<string,number>;for(const s of [...data.enter,...data.wait])if(!saved[s.symbol])saved[s.symbol]=Date.now();localStorage.setItem(key,JSON.stringify(saved));setFirstSeen(saved)}catch{setFirstSeen({})}},[data?.asOf]);
+ return <div className="mx-auto w-full max-w-[1600px] p-3 sm:p-5 lg:p-6">
+  <PageHeader title="Trade Desk" subtitle="A ranked view of directional setups, participation and trade structure" asOf={data?.asOf} marketStatus={data?.marketStatus} quotesFetched={data?.quotesFetched} isLoading={isLoading} isFetching={isFetching} error={isError?(error instanceof Error?error.message:"Feed error"):data?.error}/>
+  <MarketPulseArt/>
+  <div className="my-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+   <Stat label="High confluence" value={data?.enter.length??0} tone="bull"/>
+   <Stat label="Developing" value={data?.wait.length??0}/>
+   <Stat label="Filtered out" value={data?.avoidCount??0} tone="bear"/>
+   <Stat label="Session window" value={data?.actionableWindow?"ACTIVE":data?.marketOpen?"SELECTIVE":"CLOSED"}/>
+  </div>
+  {data?.banner&&<div className="mb-4 rounded-md border border-[#e8ddbd] bg-[#fbf6e8] px-3 py-2 text-[10px] text-[#8a7445]">{data.banner}</div>}
+  <SetupSection title="Strongest opportunities" setups={data?.enter??[]} empty="No high-confluence setups in the current market snapshot." firstSeen={firstSeen}/>
+  <SetupSection title="Building momentum" setups={data?.wait??[]} empty="No developing setups in the current market snapshot." firstSeen={firstSeen}/>
+  <p className="mt-3 border-t border-[#dedfd5] pt-3 text-[9px] leading-relaxed text-[#879187]">Market data is sourced from Yahoo Finance and may be delayed or incomplete. First detected time is recorded locally in this browser from the first refresh that observes a symbol. Verify price and liquidity before trading.</p>
+ </div>;
 }
-
-function SetupCard({ setup }: { setup: TradeSetup }) {
-  return (
-    <article className="flex flex-col rounded-lg border border-border bg-surface p-4">
-      <div className="mb-3 flex flex-wrap items-start gap-2">
-        <ActionBadge action={setup.action} />
-        <Badge variant={setup.side === "LONG" ? "bull" : "bear"}>
-          {setup.side}
-        </Badge>
-        <a
-          href={tradingViewUrl(setup.symbol)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-base font-semibold text-foreground hover:text-bull-text"
-        >
-          {setup.symbol}
-          <ExternalLink className="h-3.5 w-3.5 opacity-70" />
-        </a>
-        <span className="ml-auto text-xs text-muted">{setup.sector}</span>
-      </div>
-
-      <div className="mb-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
-        <div>
-          <p className="text-muted">Score</p>
-          <p className="text-lg font-semibold tabular-nums text-foreground">
-            {setup.score}
-          </p>
-        </div>
-        <div>
-          <p className="text-muted">LTP</p>
-          <p
-            className={cn(
-              "font-semibold tabular-nums",
-              setup.changePercent >= 0 ? "text-bull-text" : "text-bear-text",
-            )}
-          >
-            {formatNumber(setup.ltp)}{" "}
-            <span className="text-[11px] font-medium">
-              {formatPct(setup.changePercent)}
-            </span>
-          </p>
-        </div>
-        <div>
-          <p className="text-muted">R.Fac / R.Vol</p>
-          <p className="font-medium tabular-nums">
-            {formatNumber(setup.rFactor, 2)} / {formatNumber(setup.relativeVolume, 2)}×
-          </p>
-        </div>
-        <div>
-          <p className="text-muted">When</p>
-          <p className="font-medium leading-snug text-foreground">{setup.when}</p>
-        </div>
-      </div>
-
-      <div className="mb-3 grid grid-cols-1 gap-2 rounded-md border border-border/80 bg-[#0a1218] p-3 text-xs sm:grid-cols-3">
-        <div>
-          <p className="mb-0.5 text-muted">Entry zone</p>
-          <p className="font-semibold tabular-nums">
-            {formatNumber(setup.entryLow)} – {formatNumber(setup.entryHigh)}
-          </p>
-        </div>
-        <div>
-          <p className="mb-0.5 text-muted">Invalidation</p>
-          <p className="font-semibold tabular-nums text-bear-text">
-            {formatNumber(setup.invalidation)}
-          </p>
-        </div>
-        <div>
-          <p className="mb-0.5 text-muted">Target (≈1:2)</p>
-          <p className="font-semibold tabular-nums text-bull-text">
-            {formatNumber(setup.target)}
-          </p>
-        </div>
-      </div>
-
-      <ul className="space-y-1 text-[11px] leading-relaxed text-muted">
-        {setup.reasons.map((r) => (
-          <li key={r} className="flex gap-2">
-            <span className="text-bull-text">•</span>
-            <span>{r}</span>
-          </li>
-        ))}
-      </ul>
-    </article>
-  );
-}
-
-function SetupSection({
-  title,
-  setups,
-  empty,
-}: {
-  title: string;
-  setups: TradeSetup[];
-  empty: string;
-}) {
-  return (
-    <section className="mb-6">
-      <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
-        {title}{" "}
-        <span className="text-foreground">({setups.length})</span>
-      </h2>
-      {setups.length === 0 ? (
-        <p className="rounded-lg border border-border bg-surface px-4 py-8 text-center text-xs text-muted">
-          {empty}
-        </p>
-      ) : (
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
-          {setups.map((s) => (
-            <SetupCard key={`${s.action}-${s.symbol}-${s.side}`} setup={s} />
-          ))}
-        </div>
-      )}
-    </section>
-  );
-}
-
-export function TradeDeskView() {
-  const { data, isLoading, isFetching, isError, error } = useQuery({
-    queryKey: ["trade-desk"],
-    queryFn: fetchTradeDesk,
-    refetchInterval: 12_000,
-  });
-
-  return (
-    <div className="mx-auto w-full max-w-[1500px] p-3 sm:p-5 lg:p-7">
-      <PageHeader
-        title="Trade Desk"
-        subtitle="Ranked equity setups — which stock, long/short, enter or wait, and why"
-        asOf={data?.asOf}
-        marketStatus={data?.marketStatus}
-        quotesFetched={data?.quotesFetched}
-        isLoading={isLoading}
-        isFetching={isFetching}
-        error={
-          isError
-            ? error instanceof Error
-              ? error.message
-              : "Feed error"
-            : data?.error
-        }
-      />
-
-      {data?.banner && (
-        <div className="mb-4 rounded-md border border-border bg-border/30 px-3 py-2 text-xs text-muted">
-          {data.banner}
-        </div>
-      )}
-
-      <div className="mb-5 flex flex-wrap gap-3 text-xs text-muted">
-        <span className="rounded bg-bull-bg px-2 py-1 text-bull-text">
-          ENTER {data?.enter.length ?? 0}
-        </span>
-        <span className="rounded bg-border/60 px-2 py-1 text-foreground">
-          WAIT {data?.wait.length ?? 0}
-        </span>
-        <span className="rounded bg-border/40 px-2 py-1">
-          AVOID filtered {data?.avoidCount ?? 0}
-        </span>
-        {data && (
-          <span>
-            Window:{" "}
-            {data.actionableWindow
-              ? "Actionable"
-              : data.marketOpen
-                ? "Prefer wait"
-                : "Closed"}
-          </span>
-        )}
-      </div>
-
-      <SetupSection
-        title="Enter now"
-        setups={data?.enter ?? []}
-        empty="No ENTER setups yet — confluence needs break + volume + sector alignment"
-      />
-      <SetupSection
-        title="Wait"
-        setups={data?.wait ?? []}
-        empty="No WAIT setups — market may be quiet or still hydrating open-range levels"
-      />
-
-      <p className="mt-2 text-[10px] leading-relaxed text-muted">
-        Rule-based confluence helper from live Yahoo quotes — not financial
-        advice. Always verify structure on the 5m chart before trading.
-      </p>
-    </div>
-  );
-}
+function Stat({label,value,tone}:{label:string;value:string|number;tone?:"bull"|"bear"}){return <div className="stocksi-panel px-3 py-3"><p className="text-[9px] font-bold uppercase tracking-[.12em] text-[#899389]">{label}</p><p className={cn("mt-1 font-mono text-xl font-semibold",tone==="bull"?"text-[#2e8654]":tone==="bear"?"text-[#b45349]":"text-[#35483b]")}>{value}</p></div>}
