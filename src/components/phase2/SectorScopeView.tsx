@@ -58,7 +58,7 @@ function SectorHeatPanel({ sector }: { sector: SectorSummary }) {
         <button
           type="button"
           onClick={() => scrollToSectorTable(sector.sector)}
-          className="text-left text-xs font-bold uppercase tracking-wider text-[#344a3d] hover:text-[#397b52]"
+          className="text-left text-xs font-extrabold uppercase tracking-wider text-[#eaf2ff] hover:text-[#78bdff]"
           title={`Jump to ${sector.sector} table`}
         >
           {sector.sector}
@@ -72,7 +72,7 @@ function SectorHeatPanel({ sector }: { sector: SectorSummary }) {
           {formatPct(sector.avgChangePercent)} · {stocks.length} stocks
         </span>
       </header>
-      <div className="flex min-h-[160px] flex-1 flex-wrap content-stretch gap-0.5 bg-[#f3f2eb] p-0.5">
+      <div className="stocksi-scroll flex min-h-[160px] flex-1 flex-wrap content-stretch gap-1 overflow-auto bg-[#0a1422] p-1.5">
         {stocks.map((st) => {
           const flex = tileFlex(st, minTo);
           return (
@@ -82,14 +82,14 @@ function SectorHeatPanel({ sector }: { sector: SectorSummary }) {
               target="_blank"
               rel="noopener noreferrer"
               title={`${st.symbol} ${formatPct(st.changePercent)}`}
-              className="flex min-h-[52px] min-w-[72px] flex-col items-center justify-center px-1.5 py-1 transition-opacity hover:opacity-90"
+              className="flex min-h-[66px] min-w-[84px] flex-col items-center justify-center rounded-md border border-white/20 px-1.5 py-1 text-shadow-sm shadow-[inset_0_1px_0_rgba(255,255,255,.16)] transition-all hover:z-10 hover:scale-[1.02] hover:brightness-110"
               style={{
                 flexGrow: flex,
                 flexBasis: `${Math.min(160, 56 + flex * 28)}px`,
                 backgroundColor: heatColor(st.changePercent),
               }}
             >
-              <span className="max-w-full truncate text-center text-[11px] font-bold leading-tight text-[#fffefa]">
+              <span className="max-w-full truncate text-center text-[11px] font-bold leading-tight text-[#eef4ff]">
                 {st.symbol}
               </span>
               <span className="text-center text-[10px] font-semibold tabular-nums text-[#fffefa]">
@@ -156,7 +156,7 @@ function SectorPerformanceChart({ sectors }: { sectors: SectorSummary[] }) {
   }
 
   return (
-    <div className="h-[300px] rounded-lg border border-border bg-surface p-3">
+    <div className="h-[300px] overflow-hidden rounded-xl border border-white/[.10] bg-[#111b2c] p-3 shadow-[0_12px_32px_rgba(0,0,0,.18)]">
       <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-[#fffefa]">
         Sector Heatmap — Bull &amp; Bear
       </h3>
@@ -167,7 +167,7 @@ function SectorPerformanceChart({ sectors }: { sectors: SectorSummary[] }) {
         <BarChart data={rows} margin={{ top: 8, right: 8, left: 0, bottom: 36 }}>
           <XAxis
             dataKey="sector"
-            tick={{ fill: "#596b5d", fontSize: 10 }}
+            tick={{ fill: "#9eb3ce", fontSize: 10 }}
             interval={0}
             angle={-35}
             textAnchor="end"
@@ -181,11 +181,11 @@ function SectorPerformanceChart({ sectors }: { sectors: SectorSummary[] }) {
           <Tooltip
             cursor={{ fill: "rgba(255,255,255,0.04)" }}
             contentStyle={{
-              background: "#fffefa",
-              border: "1px solid #dedfd5",
+              background: "#101d30",
+              border: "1px solid rgba(145,180,225,.28)",
               borderRadius: 6,
               fontSize: 12,
-              color: "#34483a",
+              color: "#eef4ff",
             }}
             formatter={(value) => [`${value}%`, "Avg %"]}
             labelFormatter={(_, payload) =>
@@ -256,7 +256,7 @@ function SectorCard({
   return (
     <section
       id={sectorAnchorId(sector.sector)}
-      className="flex min-h-[280px] scroll-mt-4 flex-col overflow-hidden rounded-lg border border-border bg-surface transition-shadow"
+      className="stocksi-panel flex h-[350px] min-h-0 scroll-mt-4 flex-col overflow-hidden transition-shadow"
     >
       <div
         className="h-1.5 w-full"
@@ -315,7 +315,7 @@ function SectorCard({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Filter symbol…"
-            className="w-full rounded border border-border bg-[#fffefa] px-2 py-1 text-xs text-[#fffefa] outline-none focus:border-muted"
+            className="w-full rounded-lg border border-white/15 bg-[#0a1422] px-2.5 py-2 text-xs text-white placeholder:text-[#7187a4] outline-none focus:border-[#68b5ff]"
           />
         </div>
       )}
@@ -345,7 +345,7 @@ function SectorCard({
                     key={r.symbol}
                     className={cn(
                       "border-b border-border/50",
-                      i % 2 === 1 && "bg-[#16171f]",
+                      i % 2 === 1 && "bg-white/[.035]",
                       !live && "opacity-60",
                     )}
                   >
@@ -354,7 +354,7 @@ function SectorCard({
                         href={tradingViewUrl(r.symbol)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-medium text-[#344a3d] hover:text-[#397b52]"
+                        className="font-semibold text-[#e6f0ff] hover:text-[#76bdff]"
                       >
                         {r.symbol}
                       </a>
@@ -405,8 +405,8 @@ export function SectorScopeView() {
   return (
     <div className="p-4 md:p-6">
       <PageHeader
-        title="Sector Heatmap"
-        subtitle="Per-sector heatmaps, gainers chart, and live boards"
+        title="AI Sector Intelligence"
+        subtitle="Sector strength, breadth and AI-surfaced stock leaders"
         asOf={data?.asOf}
         marketStatus={data?.marketStatus}
         quotesFetched={data?.quotesFetched}
@@ -431,7 +431,7 @@ export function SectorScopeView() {
         <SectorPerformanceChart sectors={sectors} />
       </div>
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3 md:gap-4">
         {sectors.map((s) => (
           <SectorCard key={s.sector} sector={s} asOfTime={asOfTime} />
         ))}
