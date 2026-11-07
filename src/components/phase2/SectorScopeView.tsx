@@ -158,7 +158,7 @@ function SectorPerformanceChart({ sectors }: { sectors: SectorSummary[] }) {
   return (
     <div className="h-[300px] rounded-lg border border-border bg-surface p-3">
       <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-white">
-        Sector Scope — Bull &amp; Bear
+        Sector Heatmap — Bull &amp; Bear
       </h3>
       <p className="mb-2 text-[10px] text-muted">
         Click a column to jump to that sector table
@@ -405,7 +405,7 @@ export function SectorScopeView() {
   return (
     <div className="p-4 md:p-6">
       <PageHeader
-        title="Sector Scope"
+        title="Sector Heatmap"
         subtitle="Per-sector heatmaps, gainers chart, and live boards"
         asOf={data?.asOf}
         marketStatus={data?.marketStatus}
