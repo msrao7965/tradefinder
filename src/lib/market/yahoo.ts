@@ -144,15 +144,34 @@ export async function fetchGlobalTicker(): Promise<TickerItem[]> {
     try {
       const raw = await yahooFinance.quote(chunk.map((s) => s.yahoo), { return: "array" });
       const list = Array.isArray(raw) ? raw : raw ? [raw] : [];
+      const returned = new Set<string>();
       for (const q of list) {
         if (!q?.symbol || typeof q.regularMarketPrice !== "number") continue;
         const meta = GLOBAL_TICKER_SYMBOLS.find((s) => s.yahoo === q.symbol);
+        returned.add(q.symbol);
         results.push({
           symbol: q.symbol,
           name: meta?.name ?? q.shortName ?? q.symbol,
           price: asNumber(q.regularMarketPrice),
           changePercent: asNumber(q.regularMarketChangePercent),
         });
+      }
+      // Some Yahoo multi-quote responses silently omit symbols instead of
+      // rejecting the whole batch. Retry those individually.
+      for (const item of chunk.filter((entry) => !returned.has(entry.yahoo))) {
+        try {
+          const q = await yahooFinance.quote(item.yahoo);
+          if (q && typeof q.regularMarketPrice === "number") {
+            results.push({
+              symbol: item.yahoo,
+              name: item.name,
+              price: asNumber(q.regularMarketPrice),
+              changePercent: asNumber(q.regularMarketChangePercent),
+            });
+          }
+        } catch (singleError) {
+          console.error("Global ticker symbol unavailable:", item.yahoo, singleError);
+        }
       }
     } catch (error) {
       console.error("Global ticker batch failed:", chunk.map((s) => s.yahoo), error);
