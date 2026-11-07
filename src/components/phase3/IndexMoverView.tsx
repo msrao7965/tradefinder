@@ -139,7 +139,7 @@ export function IndexMoverView() {
   const { data, isLoading, isFetching, isError, error } = useQuery({
     queryKey: ["index-mover"],
     queryFn: fetchIndexMover,
-    refetchInterval: 15_000,
+    refetchInterval: 20_000,
   });
 
   return (
