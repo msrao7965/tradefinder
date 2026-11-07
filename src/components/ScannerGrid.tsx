@@ -77,14 +77,14 @@ export function ScannerGrid() {
   const pulse = data ?? empty;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col p-4 md:p-6">
+    <div className="mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col p-3 sm:p-5 lg:p-7">
       <StatusBar />
       {isLoading && !data && (
         <p className="mb-4 text-xs text-muted">
           Fetching live NSE quotes for the F&amp;O universe…
         </p>
       )}
-      <div className="grid min-h-0 flex-1 auto-rows-fr grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-2 xl:gap-5">
         <BreakoutBeacon
           rows={pulse.breakouts}
           source={data?.breakoutsSource}
