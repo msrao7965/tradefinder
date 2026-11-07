@@ -56,8 +56,8 @@ export function InsiderStrategyView() {
   return (
     <div className="p-4 md:p-6">
       <PageHeader
-        title="Insider Strategy"
-        subtitle="Unusual volume + turnover footprint (smart-money activity proxy from live quotes)"
+        title="Flow Watch"
+        subtitle="Unusual volume + turnover footprint (volume and turnover activity signals)"
         asOf={data?.asOf}
         marketStatus={data?.marketStatus}
         quotesFetched={data?.quotesFetched}
@@ -72,7 +72,7 @@ export function InsiderStrategyView() {
         }
       />
       <div className="grid grid-cols-1 gap-5 md:gap-6">
-        <Card title="High Conviction Activity">
+        <Card title="Unusual Activity">
           <Table
             columns={[
               { key: "signal", label: "Signal" },
