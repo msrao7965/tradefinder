@@ -1,4 +1,2 @@
-import { cn } from "@/lib/utils";
-export function Badge({children,variant="neutral",className}:{children:React.ReactNode;variant?:"bull"|"bear"|"neutral";className?:string}) {
- return <span className={cn("inline-flex items-center border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider",variant==="bull"&&"border-[#c8dfce] bg-[#e8f3e9] text-[#2f754b]",variant==="bear"&&"border-[#edcfca] bg-[#faece8] text-[#ae5147]",variant==="neutral"&&"border-[#e1e3d9] bg-[#f1f2ec] text-[#758177]",className)}>{children}</span>;
-}
+import {cn} from "@/lib/utils";
+export function Badge({children,variant="neutral",className}:{children:React.ReactNode;variant?:"bull"|"bear"|"neutral";className?:string}){return <span className={cn("inline-flex items-center gap-1 rounded-md border px-1.5 py-[3px] text-[8px] font-extrabold uppercase tracking-[.09em]",variant==="bull"&&"border-emerald-300/25 bg-emerald-400/10 text-[#48e8a6]",variant==="bear"&&"border-rose-300/25 bg-rose-400/10 text-[#ff8292]",variant==="neutral"&&"border-slate-300/20 bg-slate-400/10 text-[#b9c9df]",className)}>{children}</span>}
