@@ -58,7 +58,7 @@ function SectorHeatPanel({ sector }: { sector: SectorSummary }) {
         <button
           type="button"
           onClick={() => scrollToSectorTable(sector.sector)}
-          className="text-left text-xs font-bold uppercase tracking-wider text-white hover:text-bull-text"
+          className="text-left text-xs font-bold uppercase tracking-wider text-[#344a3d] hover:text-[#397b52]"
           title={`Jump to ${sector.sector} table`}
         >
           {sector.sector}
@@ -72,7 +72,7 @@ function SectorHeatPanel({ sector }: { sector: SectorSummary }) {
           {formatPct(sector.avgChangePercent)} · {stocks.length} stocks
         </span>
       </header>
-      <div className="flex min-h-[160px] flex-1 flex-wrap content-stretch gap-0.5 bg-[#0e0f15] p-0.5">
+      <div className="flex min-h-[160px] flex-1 flex-wrap content-stretch gap-0.5 bg-[#f3f2eb] p-0.5">
         {stocks.map((st) => {
           const flex = tileFlex(st, minTo);
           return (
@@ -89,10 +89,10 @@ function SectorHeatPanel({ sector }: { sector: SectorSummary }) {
                 backgroundColor: heatColor(st.changePercent),
               }}
             >
-              <span className="max-w-full truncate text-center text-[11px] font-bold leading-tight text-white">
+              <span className="max-w-full truncate text-center text-[11px] font-bold leading-tight text-[#fffefa]">
                 {st.symbol}
               </span>
-              <span className="text-center text-[10px] font-semibold tabular-nums text-white">
+              <span className="text-center text-[10px] font-semibold tabular-nums text-[#fffefa]">
                 {formatPct(st.changePercent)}
               </span>
             </a>
@@ -157,7 +157,7 @@ function SectorPerformanceChart({ sectors }: { sectors: SectorSummary[] }) {
 
   return (
     <div className="h-[300px] rounded-lg border border-border bg-surface p-3">
-      <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-white">
+      <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-[#fffefa]">
         Sector Heatmap — Bull &amp; Bear
       </h3>
       <p className="mb-2 text-[10px] text-muted">
@@ -167,25 +167,25 @@ function SectorPerformanceChart({ sectors }: { sectors: SectorSummary[] }) {
         <BarChart data={rows} margin={{ top: 8, right: 8, left: 0, bottom: 36 }}>
           <XAxis
             dataKey="sector"
-            tick={{ fill: "#ffffff", fontSize: 10 }}
+            tick={{ fill: "#596b5d", fontSize: 10 }}
             interval={0}
             angle={-35}
             textAnchor="end"
             height={60}
           />
           <YAxis
-            tick={{ fill: "#ffffff", fontSize: 10 }}
+            tick={{ fill: "#596b5d", fontSize: 10 }}
             tickFormatter={(v) => `${v}%`}
             width={40}
           />
           <Tooltip
             cursor={{ fill: "rgba(255,255,255,0.04)" }}
             contentStyle={{
-              background: "#1b1c24",
-              border: "1px solid #2a2b36",
+              background: "#fffefa",
+              border: "1px solid #dedfd5",
               borderRadius: 6,
               fontSize: 12,
-              color: "#ffffff",
+              color: "#34483a",
             }}
             formatter={(value) => [`${value}%`, "Avg %"]}
             labelFormatter={(_, payload) =>
@@ -223,7 +223,7 @@ function ChgPill({ value }: { value: number }) {
   return (
     <span
       className={cn(
-        "inline-flex min-w-[4.25rem] justify-center rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums text-white",
+        "inline-flex min-w-[4.25rem] justify-center rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums text-[#fffefa]",
         up ? "bg-[#16a34a]" : "bg-[#dc2626]",
       )}
     >
@@ -265,7 +265,7 @@ function SectorCard({
         }}
       />
       <header className="flex items-center gap-2 border-b border-border px-3 py-2.5">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-[#fffefa]">
           {sector.sector}
         </h3>
         <span className="text-[10px] text-muted">
@@ -276,7 +276,7 @@ function SectorCard({
           <button
             type="button"
             onClick={() => setShowSearch((v) => !v)}
-            className="rounded p-1 text-muted hover:bg-border/40 hover:text-white"
+            className="rounded p-1 text-muted hover:bg-border/40 hover:text-[#fffefa]"
             aria-label="Search sector"
           >
             <Search className="h-3.5 w-3.5" />
@@ -315,7 +315,7 @@ function SectorCard({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Filter symbol…"
-            className="w-full rounded border border-border bg-[#12131a] px-2 py-1 text-xs text-white outline-none focus:border-muted"
+            className="w-full rounded border border-border bg-[#fffefa] px-2 py-1 text-xs text-[#fffefa] outline-none focus:border-muted"
           />
         </div>
       )}
@@ -354,12 +354,12 @@ function SectorCard({
                         href={tradingViewUrl(r.symbol)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-medium text-white hover:text-bull-text"
+                        className="font-medium text-[#344a3d] hover:text-[#397b52]"
                       >
                         {r.symbol}
                       </a>
                     </td>
-                    <td className="px-3 py-2 text-right tabular-nums text-white">
+                    <td className="px-3 py-2 text-right tabular-nums text-[#fffefa]">
                       {formatNumber(r.ltp)}
                     </td>
                     <td className="px-3 py-2 text-right">

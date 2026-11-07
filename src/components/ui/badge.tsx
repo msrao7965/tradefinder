@@ -1,25 +1,2 @@
-import { cn } from "@/lib/utils";
-
-export function Badge({
-  children,
-  variant = "neutral",
-  className,
-}: {
-  children: React.ReactNode;
-  variant?: "bull" | "bear" | "neutral";
-  className?: string;
-}) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-semibold tracking-wide",
-        variant === "bull" && "bg-bull-bg text-bull-text",
-        variant === "bear" && "bg-bear-bg text-bear-text",
-        variant === "neutral" && "bg-border/60 text-muted",
-        className,
-      )}
-    >
-      {children}
-    </span>
-  );
-}
+import {cn} from "@/lib/utils";
+export function Badge({children,variant="neutral",className}:{children:React.ReactNode;variant?:"bull"|"bear"|"neutral";className?:string}){return <span className={cn("inline-flex items-center gap-1 rounded-md border px-1.5 py-[3px] text-[8px] font-extrabold uppercase tracking-[.09em]",variant==="bull"&&"border-emerald-300/25 bg-emerald-400/10 text-[#48e8a6]",variant==="bear"&&"border-rose-300/25 bg-rose-400/10 text-[#ff8292]",variant==="neutral"&&"border-slate-300/20 bg-slate-400/10 text-[#b9c9df]",className)}>{children}</span>}
