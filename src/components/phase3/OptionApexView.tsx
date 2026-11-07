@@ -39,7 +39,7 @@ export function OptionApexView() {
   return (
     <div className="p-4 md:p-6">
       <PageHeader
-        title="Option Apex"
+        title="Options Bias"
         subtitle="Call vs put lean from Nifty 15m structure + India VIX regime"
         asOf={data?.asOf}
         marketStatus={data?.marketStatus}
