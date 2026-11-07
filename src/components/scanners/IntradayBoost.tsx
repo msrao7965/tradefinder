@@ -39,7 +39,7 @@ export function IntradayBoost({ rows }: { rows: IntradayBoostRow[] }) {
   } = useSortedRows(rows, getValue, "rFactor", "desc");
 
   return (
-    <Card title="Intraday Boost">
+    <Card title="Volume Surge">
       <Table
         columns={COLUMNS}
         sortKey={sortKey}
