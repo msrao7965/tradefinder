@@ -12,6 +12,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <main id="main-content" className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
           {children}
         </main>
+        <footer className="shrink-0 border-t border-white/[.08] bg-[#0b1422]/90 px-4 py-2 text-center text-[9px] leading-relaxed text-[#7187a4]">Stocksi is an AI-assisted market research tool, not investment advice. All signals are informational; verify independently before trading.</footer>
       </div>
     </div>
   );
