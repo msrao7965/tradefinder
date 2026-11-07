@@ -1,6 +1,6 @@
-# TradeFinder (Phase 1–3)
+# Stocksi by Underground Bulls
 
-Live NSE scanner dashboard clone. All rows come from Yahoo Finance — no mock data.
+Live NSE market intelligence dashboard. Market data is fetched from Yahoo Finance; no mock rows are generated.
 
 ## Setup
 
@@ -17,17 +17,17 @@ Open [http://localhost:3000](http://localhost:3000).
 Ranked **ENTER / WAIT** equity setups with entry zone, invalidation, target, and confluence reasons.
 
 ### Phase 1 — Market Pulse (`/market-pulse`)
-Breakout Beacon, Intraday Boost, Top/Low Level, Leaders Matrix
+Range Radar, Volume Surge, Top/Low Level, Leaders Matrix
 
 ### Phase 2 — Stocks tools
-- **Insider Strategy** (`/insider-strategy`) — unusual volume + turnover footprint
-- **Sector Scope** (`/sector-scope`) — sector indices, sector momentum, hot stocks
-- **Swing Spectrum** (`/swing-spectrum`) — near 52W high/low + session momentum
+- **Flow Watch** (`/insider-strategy`) — unusual volume + turnover footprint
+- **Sector Heatmap** (`/sector-scope`) — sector indices, sector momentum, hot stocks
+- **Swing Setups** (`/swing-spectrum`) — near 52W high/low + session momentum
 
 ### Phase 3 — Index tools
-- **Option Clock** (`/option-clock`) — 15m Nifty/BankNifty session clock for option timing
-- **Option Apex** (`/option-apex`) — call/put lean from 15m structure + India VIX
-- **Index Mover** (`/index-mover`) — index board + breadth drivers
+- **Momentum Clock** (`/option-clock`) — 15m Nifty/BankNifty session clock for option timing
+- **Options Bias** (`/option-apex`) — call/put lean from 15m structure + India VIX
+- **Index Drivers** (`/index-mover`) — index board + breadth drivers
 
 > Note: Yahoo does not expose NSE option OI chains. Clock/Apex use real underlying + VIX data (no fabricated OI).
 

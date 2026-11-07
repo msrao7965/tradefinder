@@ -125,7 +125,7 @@ export function HighPowerStocks({ rows }: { rows: LeaderRow[] }) {
   } = useSortedRows(rows, getValue, "turnover", "desc");
 
   return (
-    <Card title="High Pow. Stocks">
+    <Card title="Turnover Leaders">
       <Table
         columns={POWER_COLUMNS}
         sortKey={sortKey}

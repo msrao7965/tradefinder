@@ -145,7 +145,7 @@ export function IndexMoverView() {
   return (
     <div className="p-4 md:p-6">
       <PageHeader
-        title="Index Mover"
+        title="Index Drivers"
         subtitle="Live index board + stocks driving breadth"
         asOf={data?.asOf}
         marketStatus={data?.marketStatus}
