@@ -133,25 +133,45 @@ export async function fetchOpen15Range(
 }
 
 export async function fetchGlobalTicker(): Promise<TickerItem[]> {
-  const symbols = GLOBAL_TICKER_SYMBOLS.map((s) => s.yahoo);
-  const nameByYahoo = new Map(
-    GLOBAL_TICKER_SYMBOLS.map((s) => [s.yahoo, s.name]),
-  );
+  const results: TickerItem[] = [];
+  const chunkSize = 5;
 
-  try {
-    const raw = await yahooFinance.quote(symbols, { return: "array" });
-    const list = Array.isArray(raw) ? raw : raw ? [raw] : [];
-
-    return list
-      .filter((q) => q?.symbol && typeof q.regularMarketPrice === "number")
-      .map((q) => ({
-        symbol: q.symbol!,
-        name: nameByYahoo.get(q.symbol!) ?? q.shortName ?? q.symbol!,
-        price: asNumber(q.regularMarketPrice),
-        changePercent: asNumber(q.regularMarketChangePercent),
-      }));
-  } catch (error) {
-    console.error("Global ticker fetch failed:", error);
-    return [];
+  // Yahoo's multi-symbol endpoint can fail the entire response when one
+  // international index is unavailable. Isolate failures by small batches,
+  // then fall back to individual symbols so NIFTY/SENSEX still appear.
+  for (let i = 0; i < GLOBAL_TICKER_SYMBOLS.length; i += chunkSize) {
+    const chunk = GLOBAL_TICKER_SYMBOLS.slice(i, i + chunkSize);
+    try {
+      const raw = await yahooFinance.quote(chunk.map((s) => s.yahoo), { return: "array" });
+      const list = Array.isArray(raw) ? raw : raw ? [raw] : [];
+      for (const q of list) {
+        if (!q?.symbol || typeof q.regularMarketPrice !== "number") continue;
+        const meta = GLOBAL_TICKER_SYMBOLS.find((s) => s.yahoo === q.symbol);
+        results.push({
+          symbol: q.symbol,
+          name: meta?.name ?? q.shortName ?? q.symbol,
+          price: asNumber(q.regularMarketPrice),
+          changePercent: asNumber(q.regularMarketChangePercent),
+        });
+      }
+    } catch (error) {
+      console.error("Global ticker batch failed:", chunk.map((s) => s.yahoo), error);
+      for (const item of chunk) {
+        try {
+          const q = await yahooFinance.quote(item.yahoo);
+          if (q && typeof q.regularMarketPrice === "number") {
+            results.push({
+              symbol: item.yahoo,
+              name: item.name,
+              price: asNumber(q.regularMarketPrice),
+              changePercent: asNumber(q.regularMarketChangePercent),
+            });
+          }
+        } catch (singleError) {
+          console.error("Global ticker symbol unavailable:", item.yahoo, singleError);
+        }
+      }
+    }
   }
+  return results;
 }
