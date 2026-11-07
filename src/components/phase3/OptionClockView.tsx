@@ -41,7 +41,7 @@ export function OptionClockView() {
   return (
     <div className="p-4 md:p-6">
       <PageHeader
-        title="Option Clock"
+        title="Momentum Clock"
         subtitle="15m session clock on the underlying — when call/put momentum was strongest"
         asOf={data?.asOf}
         marketStatus={data?.marketStatus}
